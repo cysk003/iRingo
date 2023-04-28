@@ -1,7 +1,7 @@
 /*
 README: https://github.com/VirgilClyne/iRingo
 */
-const $ = new Env(" iRingo: 📺 TV v3.0.0(3) request.beta");
+const $ = new Env(" iRingo: 📺 TV v3.0.0(4) request.beta");
 const URL = new URLs();
 const DataBase = {
 	"Location":{
@@ -54,7 +54,6 @@ let $response = undefined;
 			let body = {};
 			// 设置默认类型
 			let Type = "Other";
-			$.log(`⚠ ${$.name}, Type = ${Type}, CC = ${Settings[Type].CountryCode}`);
 			// 方法判断
 			switch (METHOD) {
 				case "POST":
@@ -79,7 +78,7 @@ let $response = undefined;
 										case "uts/v2/favorites/add":
 										case "uts/v2/favorites/remove":
 											Type = "Sports";
-											if ($request.body) $request.body = $request.body.replace(/sf=[\d]{6}/, `sf=${Configs.Storefront[Settings.Sports.CountryCode]}`);
+											if ($request.body) $request.body = $request.body.replace(/sf=[\d]{6}/, `sf=${Configs.Storefront[Settings[Type].CountryCode]}`);
 											break;
 									};
 									break;
@@ -223,12 +222,13 @@ let $response = undefined;
 				case "TRACE":
 					break;
 			};
-			if ($request?.headers?.Host) $request.headers.Host = url.host;
+			$.log(`⚠ ${$.name}, Type = ${Type}, CC = ${Settings[Type].CountryCode}`);
 			if (url?.params?.sf) url.params.sf = Configs.Storefront[Settings[Type].CountryCode] || url.params.sf
 			if (url.params.locale) url.params.locale = Configs.Locale[Settings[Type].CountryCode] || url.params.locale
 			$.log(`🚧 ${$.name}, 调试信息`, `sf = ${url.params.sf}, locale = ${url.params.locale}`, "")
 			$request.url = URL.stringify(url);
 			$.log(`🚧 ${$.name}, $request.url: ${$request.url}`, "");
+			if ($request?.headers?.Host) $request.headers.Host = url.host;
 			if ($request?.headers?.["x-apple-store-front"]) $request.headers["x-apple-store-front"] = (Configs.Storefront?.[Settings[Type].CountryCode]) ? $request.headers["x-apple-store-front"].replace(/\d{6}/, Configs.Storefront[Settings[Type].CountryCode]) : $request.headers["x-apple-store-front"];
 			break;
 		case "false":
